@@ -1,187 +1,146 @@
-import { NativeModules, DeviceEventEmitter, NativeEventEmitter } from 'react-native';
-import _ from 'lodash';
-import { RFIDScannerEvent } from './RFIDScannerEvent';
+import {
+  NativeModules,
+  DeviceEventEmitter,
+  NativeEventEmitter
+} from "react-native";
+import _ from "lodash";
+import { RFIDScannerEvent } from "./RFIDScannerEvent";
 
 const { RNRfidTsl } = NativeModules;
 
-let instance = null;
-
+let tagEvent = null;
+let rfidStatusEvent = null;
+let writeTagEvent = null;
+let barcodeTriggerEvent = null;
+let triggerActionEvent = null;
+let locateTagEvent = null;
 class RFIDScanner {
-	constructor() {
-		if (_.isEmpty(instance)) {
-			instance = this;
-			this.opened = false;
-			this.onCallBacks = {};
-		}
-	}
+  removeAllListeners = () => {
+    if (!_.isEmpty(this.tagEvent)) {
+      this.tagEvent.remove();
+    }
+    if (!_.isEmpty(this.rfidStatusEvent)) {
+      this.rfidStatusEvent.remove();
+    }
+    if (!_.isEmpty(barcodeTriggerEvent)) {
+      this.barcodeTriggerEvent.remove();
+    }
+    if (!_.isEmpty(this.writeTagEvent)) {
+      this.writeTagEvent.remove();
+    }
+    if (!_.isEmpty(this.triggerActionEvent)) {
+      this.triggerActionEvent.remove();
+    }
+    if (!_.isEmpty(this.locateTagEvent)) {
+      this.locateTagEvent.remove();
+    }
+  };
 
-	HandleTagEvent = tag => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.TAG)) {
-			this.onCallBacks[RFIDScannerEvent.TAG](tag);
-		}
-	};
+  setOnTagEvent = callback => {
+    this.tagEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.TAG,
+      callback
+    );
+  };
 
-	HandleStatus = status => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.RFID_Status)) {
-			this.onCallBacks[RFIDScannerEvent.RFID_Status](status);
-		}
-	};
+  setOnRfidStatusEvent = callback => {
+    this.rfidStatusEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.RFID_STATUS,
+      callback
+    );
+  };
 
-	HandleBarcodeEvent = event => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.BarcodeTrigger)) {
-			this.onCallBacks[RFIDScannerEvent.BarcodeTrigger](event);
-		}
-	};
+  setOnBarcodeTriggerEvent = callback => {
+    this.barcodeTriggerEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.BARCODE_TRIGGER,
+      callback
+    );
+  };
 
-	HandleWriteTag = event => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.WRITETAG)) {
-			this.onCallBacks[RFIDScannerEvent.WRITETAG](event);
-		}
-	};
+  setOnWriteTagEvent = callback => {
+    this.writeTagEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.WRITE_TAG,
+      callback
+    );
+  };
 
-	HandlerTrigger = event => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.triggerAction)) {
-			this.onCallBacks[RFIDScannerEvent.triggerAction](event);
-		}
-	};
+  setOnTriggerActionEvent = callback => {
+    this.triggerActionEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.TRIGGER_ACTION,
+      callback
+    );
+  };
 
-	HandleLocateTag = event => {
-		if (this.onCallBacks.hasOwnProperty(RFIDScannerEvent.LOCATE_TAG)) {
-			this.onCallBacks[RFIDScannerEvent.LOCATE_TAG](event);
-		}
-	};
+  setOnLocateTagEvent = callback => {
+    this.locateTagEvent = DeviceEventEmitter.addListener(
+      RFIDScannerEvent.LOCATE_TAG,
+      callback
+    );
+  };
 
-	RemoveAllListener = () => {
-		if (!_.isEmpty(this.tagEvent)) {
-			this.tagEvent.remove();
-			this.tagEvent = null;
-		}
-		if (!_.isEmpty(this.rfidStatusEvent)) {
-			this.rfidStatusEvent.remove();
-			this.rfidStatusEvent = null;
-		}
-		if (!_.isEmpty(this.barcodeTriggerEvent)) {
-			this.barcodeTriggerEvent.remove();
-			this.barcodeTriggerEvent = null;
-		}
-		if (!_.isEmpty(this.writeTagEvent)) {
-			this.writeTagEvent.remove();
-			this.writeTagEvent = null;
-		}
-		if (!_.isEmpty(this.triggerActionEvent)) {
-			this.triggerActionEvent.remove();
-			this.triggerActionEvent = null;
-		}
-		if (!_.isEmpty(this.LocateTagEvent)) {
-			this.LocateTagEvent.remove();
-			this.LocateTagEvent = null;
-		}
-	};
+  initialThread = () => {
+    RNRfidTsl.InitialThread();
+  };
 
-	ActiveAllListener = () => {
-		if (_.isEmpty(this.tagEvent))
-			this.tagEvent = DeviceEventEmitter.addListener(RFIDScannerEvent.TAG, this.HandleTagEvent);
-		if (_.isEmpty(this.rfidStatusEvent))
-			this.rfidStatusEvent = DeviceEventEmitter.addListener(
-				RFIDScannerEvent.RFID_Status,
-				this.HandleStatus
-			);
-		if (_.isEmpty(this.barcodeTriggerEvent))
-			this.barcodeTriggerEvent = DeviceEventEmitter.addListener(
-				RFIDScannerEvent.BarcodeTrigger,
-				this.HandleBarcodeEvent
-			);
-		if (_.isEmpty(this.writeTagEvent))
-			this.writeTagEvent = DeviceEventEmitter.addListener(
-				RFIDScannerEvent.WRITETAG,
-				this.HandleWriteTag
-			);
-		if (_.isEmpty(this.triggerActionEvent))
-			this.triggerActionEvent = DeviceEventEmitter.addListener(
-				RFIDScannerEvent.triggerAction,
-				this.HandlerTrigger
-			);
-		if (_.isEmpty(this.LocateTagEvent))
-			this.LocateTagEvent = DeviceEventEmitter.addListener(
-				RFIDScannerEvent.LOCATE_TAG,
-				this.HandleLocateTag
-			);
-	};
+  connect = () => {
+    return RNRfidTsl.ConnectDevice();
+  };
 
-	InitialThread = () => {
-		RNRfidTsl.InitialThread();
-	};
+  disconnect = () => {
+    return RNRfidTsl.DisconnectDevice();
+  };
 
-	connect = () => {
-		return RNRfidTsl.ConnectDevice();
-	};
+  attemptToReconnect = () => {
+    return RNRfidTsl.AttemptToReconnect();
+  };
 
-	disconnect = () => {
-		return RNRfidTsl.DisconnectDevice();
-	};
+  isConnected = () => {
+    return RNRfidTsl.IsConnected();
+  };
 
-	AttemptToReconnect = () => {
-		return RNRfidTsl.AttemptToReconnect();
-	};
+  cleanTags = () => {
+    return RNRfidTsl.CleanCacheTags();
+  };
 
-	isConnected = () => {
-		return RNRfidTsl.IsConnected();
-	};
+  getDeviceList = async () => {
+    return RNRfidTsl.GetDeviceList();
+  };
 
-	cleanTags = () => {
-		return RNRfidTsl.CleanCacheTags();
-	};
+  saveCurrentRoute = value => {
+    return RNRfidTsl.SaveCurrentRoute(value);
+  };
 
-	GetDeviceList = async () => {
-		return RNRfidTsl.GetDeviceList();
-	};
+  saveSelectedScanner = name => {
+    return RNRfidTsl.SaveSelectedScanner(name);
+  };
 
-	SaveCurrentRoute = value => {
-		return RNRfidTsl.SaveCurrentRoute(value);
-	};
+  getConnectedReader = () => {
+    return RNRfidTsl.GetConnectedReader();
+  };
 
-	SaveSelectedScanner = name => {
-		return RNRfidTsl.SaveSelectedScanner(name);
-	};
+  getBatteryLevel = () => {
+    return RNRfidTsl.GetBatteryLevel();
+  };
 
-	GetConnectedReader = () => {
-		return RNRfidTsl.GetConnectedReader();
-	};
+  setAntennaLevel = number => {
+    if (!_.isEmpty(number) && !_.isEmpty(number.antennaLevel)) {
+      let level = number.antennaLevel;
+      if (!_.isNumber(level)) level = parseInt(level);
+      return RNRfidTsl.SetAntennaLevel(level);
+    }
+  };
 
-	GetBatteryLevel = () => {
-		return RNRfidTsl.GetBatteryLevel();
-	};
+  readBarcode = value => {
+    return RNRfidTsl.ReadBarcode(value);
+  };
 
-	SetAntennaLevel = number => {
-		if (!_.isEmpty(number) && !_.isEmpty(number.antennaLevel)) {
-			let level = number.antennaLevel;
-			if (!_.isNumber(level)) level = parseInt(level);
-			return RNRfidTsl.SetAntennaLevel(level);
-		}
-	};
+  programTag = (oldTag, newTag) => {
+    return RNRfidTsl.ProgramTag(oldTag, newTag);
+  };
 
-	ReadBarcode = value => {
-		return RNRfidTsl.ReadBarcode(value);
-	};
-
-	ProgramTag = (oldTag, newTag) => {
-		return RNRfidTsl.ProgramTag(oldTag, newTag);
-	};
-
-	SaveTagID = tag => {
-		return RNRfidTsl.SaveTagID(tag);
-	};
-
-	on = (event, callback) => {
-		this.onCallBacks[event] = callback;
-	};
-
-	removeon = (event, callback) => {
-		if (this.onCallBacks.hasOwnProperty(event)) {
-			this.onCallBacks[event] = null;
-			delete this.onCallBacks[event];
-		}
-	};
+  saveTagID = tag => {
+    return RNRfidTsl.SaveTagID(tag);
+  };
 }
 
 export default new RFIDScanner();

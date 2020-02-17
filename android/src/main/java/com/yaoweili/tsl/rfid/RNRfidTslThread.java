@@ -59,26 +59,26 @@ public abstract class RNRfidTslThread extends Thread {
 	// User selected reader
 	private static String selectedReader = null;
 
-	//Indicate to read barcode
+	// Indicate to read barcode
 	private static boolean isReadBarcode = false;
 
-	//Inventory
+	// Inventory
 	private static InventoryCommand mInventoryCommand = null;
 	private static InventoryCommand mInventoryResponder = null;
 	private static boolean mAnyTagSeen = false;
 	private static ArrayList<String> cacheTags = null;
 
-	//Play Sound
+	// Play Sound
 	private static MediaPlayer mp = null;
 	private static Thread soundThread = null;
 	private static boolean isPlaying = false;
 	private static int soundRange = -1;
 
-	//Find IT
+	// Find IT
 	private static String tagID = null;
 	private static boolean isLocateMode = false;
 
-	//Program tag
+	// Program tag
 	private static WriteTransponderCommand mWriteCommand = null;
 
 	private SignalPercentageConverter mPercentageConverter = new SignalPercentageConverter();
@@ -130,40 +130,40 @@ public abstract class RNRfidTslThread extends Thread {
 	public abstract void dispatchEvent(String name, boolean data);
 
 	void onHostResume() {
-//		if (mReader != null && ReaderManager.sharedInstance() != null) {
-//			// setEnabled(true);
-//			// Remember if the pause/resume was caused by ReaderManager - this will be
-//			// cleared when ReaderManager.onResume() is called
-//			// boolean readerManagerDidCauseOnPause =
-//			// ReaderManager.sharedInstance().didCauseOnPause();
-//
-//			// The ReaderManager needs to know about Activity lifecycle changes
-//			ReaderManager.sharedInstance().onResume();
-//
-//			// The Activity may start with a reader already connected (perhaps by another
-//			// App)
-//			// Update the ReaderList which will add any unknown reader, firing events
-//			// appropriately
-//			ReaderManager.sharedInstance().updateList();
-//
-//			// Locate a Reader to use when necessary
-//			AutoSelectReader(true);
-//
-//		}
+		// if (mReader != null && ReaderManager.sharedInstance() != null) {
+		// // setEnabled(true);
+		// // Remember if the pause/resume was caused by ReaderManager - this will be
+		// // cleared when ReaderManager.onResume() is called
+		// // boolean readerManagerDidCauseOnPause =
+		// // ReaderManager.sharedInstance().didCauseOnPause();
+		//
+		// // The ReaderManager needs to know about Activity lifecycle changes
+		// ReaderManager.sharedInstance().onResume();
+		//
+		// // The Activity may start with a reader already connected (perhaps by another
+		// // App)
+		// // Update the ReaderList which will add any unknown reader, firing events
+		// // appropriately
+		// ReaderManager.sharedInstance().updateList();
+		//
+		// // Locate a Reader to use when necessary
+		// AutoSelectReader(true);
+		//
+		// }
 	}
 
 	void onHostPause() {
-//		if (mReader != null && ReaderManager.sharedInstance() != null) {
-//			setEnabled(false);
-//			// Disconnect from the reader to allow other Apps to use it
-//			// unless pausing when USB device attached or using the DeviceListActivity to
-//			// select a Reader
-//			if (!ReaderManager.sharedInstance().didCauseOnPause() && mReader != null) {
-//				mReader.disconnect();
-//			}
-//
-//			ReaderManager.sharedInstance().onPause();
-//		}
+		// if (mReader != null && ReaderManager.sharedInstance() != null) {
+		// setEnabled(false);
+		// // Disconnect from the reader to allow other Apps to use it
+		// // unless pausing when USB device attached or using the DeviceListActivity to
+		// // select a Reader
+		// if (!ReaderManager.sharedInstance().didCauseOnPause() && mReader != null) {
+		// mReader.disconnect();
+		// }
+		//
+		// ReaderManager.sharedInstance().onPause();
+		// }
 	}
 
 	void onHostDestroy() {
@@ -186,7 +186,7 @@ public abstract class RNRfidTslThread extends Thread {
 			// Ensure that all existing responders are removed
 			commander.clearResponders();
 
-			//Logger
+			// Logger
 			commander.addResponder(new LoggerResponder());
 
 			// Add responder to enable the synchronous commands
@@ -240,9 +240,9 @@ public abstract class RNRfidTslThread extends Thread {
 					// sendMessageNotification("No transponders seen");
 					Log.i("No transponders seen", "No transponders seen");
 					if (isLocateMode) {
-//						isPlaying = false;
+						// isPlaying = false;
 						soundRange = -1;
-//						soundThread = null;
+						// soundThread = null;
 						WritableMap map = Arguments.createMap();
 						map.putInt("distance", 0);
 						dispatchEvent("locateTag", map);
@@ -259,7 +259,7 @@ public abstract class RNRfidTslThread extends Thread {
 	}
 
 	private void InitTrigger() {
-		//Trigger
+		// Trigger
 		SwitchResponder mSwitchResponder = new SwitchResponder();
 		mSwitchResponder.setSwitchStateReceivedDelegate(mSwitchDelegate);
 		getCommander().addResponder(mSwitchResponder);
@@ -317,9 +317,8 @@ public abstract class RNRfidTslThread extends Thread {
 
 			getCommander().executeCommand(mInventoryCommand);
 			if (!mInventoryCommand.isSuccessful()) {
-				String errorMsg = String.format(
-						"%s failed!\nError code: %s\n",
-						mInventoryCommand.getClass().getSimpleName(), mInventoryCommand.getErrorCode());
+				String errorMsg = String.format("%s failed!\nError code: %s\n", mInventoryCommand.getClass().getSimpleName(),
+						mInventoryCommand.getErrorCode());
 				Log.e("LocateTag", errorMsg);
 				throw new Exception(errorMsg);
 			}
@@ -348,9 +347,8 @@ public abstract class RNRfidTslThread extends Thread {
 				getCommander().executeCommand(mWriteCommand);
 
 				if (!mWriteCommand.isSuccessful()) {
-					String errorMsg = String.format(
-							"%s failed!\nError code: %s\n",
-							mWriteCommand.getClass().getSimpleName(), mWriteCommand.getErrorCode());
+					String errorMsg = String.format("%s failed!\nError code: %s\n", mWriteCommand.getClass().getSimpleName(),
+							mWriteCommand.getErrorCode());
 					dispatchEvent("writeTag", errorMsg);
 					return false;
 				}
@@ -360,7 +358,7 @@ public abstract class RNRfidTslThread extends Thread {
 		return false;
 	}
 
-	//Trigger Handler
+	// Trigger Handler
 	private final ISwitchStateReceivedDelegate mSwitchDelegate = new ISwitchStateReceivedDelegate() {
 
 		@Override
@@ -370,7 +368,7 @@ public abstract class RNRfidTslThread extends Thread {
 			if (currentRoute != null) {
 				WritableMap map = Arguments.createMap();
 				if (SwitchState.OFF.equals(state)) {
-					//Trigger Release
+					// Trigger Release
 					if (isLocateMode) {
 						isPlaying = false;
 						soundRange = -1;
@@ -379,21 +377,19 @@ public abstract class RNRfidTslThread extends Thread {
 						dispatchEvent("locateTag", map);
 					} else if (isReadBarcode) {
 						dispatchEvent("BarcodeTrigger", false);
-					} else if (currentRoute.equalsIgnoreCase("tagit") ||
-							currentRoute.equalsIgnoreCase("lookup")) {
+					} else if (currentRoute.equalsIgnoreCase("tagit") || currentRoute.equalsIgnoreCase("lookup")) {
 						cacheTags = new ArrayList<>();
 					} else if (currentRoute.equalsIgnoreCase("locateTag")) {
 						map.putString("RFIDStatusEvent", "inventoryStop");
 						dispatchEvent("triggerAction", map);
 					}
 				} else {
-					//Trigger Pull
+					// Trigger Pull
 					if (isLocateMode) {
 						isPlaying = true;
 					} else if (isReadBarcode) {
 						dispatchEvent("BarcodeTrigger", true);
-					} else if (currentRoute.equalsIgnoreCase("lookup") ||
-							currentRoute.equalsIgnoreCase("locatetag")) {
+					} else if (currentRoute.equalsIgnoreCase("lookup") || currentRoute.equalsIgnoreCase("locatetag")) {
 						map.putString("RFIDStatusEvent", "inventoryStart");
 						dispatchEvent("triggerAction", map);
 					}
@@ -402,55 +398,57 @@ public abstract class RNRfidTslThread extends Thread {
 		}
 	};
 
-	//Inventory Delegate Handler
-	private final ITransponderReceivedDelegate mInventoryDelegate =
-			new ITransponderReceivedDelegate() {
-				@Override
-				public void transponderReceived(TransponderData transponder, boolean moreAvailable) {
-					//Inventory received tags
-					mAnyTagSeen = true;
-					String EPC = transponder.getEpc();
-					int rssi = transponder.getRssi();
+	// Inventory Delegate Handler
+	private final ITransponderReceivedDelegate mInventoryDelegate = new ITransponderReceivedDelegate() {
+		@Override
+		public void transponderReceived(TransponderData transponder, boolean moreAvailable) {
+			// Inventory received tags
+			mAnyTagSeen = true;
+			String EPC = transponder.getEpc();
+			int rssi = transponder.getRssi();
 
-					if (isLocateMode && isPlaying) {
-						int distance = mPercentageConverter.asPercentage(rssi);
-						PlaySound(distance);
-						Log.e("distance", distance + "");
-						WritableMap map = Arguments.createMap();
-						map.putInt("distance", distance);
-						dispatchEvent("locateTag", map);
-					} else if (!isLocateMode && !isReadBarcode) {
-						if (currentRoute != null && currentRoute.equalsIgnoreCase("tagit")) {
-							if (rssi > -50) {
-								if (addTagToList(EPC) && cacheTags.size() == 1) {
-									dispatchEvent("TagEvent", EPC);
-								}
-							}
-						} else {
-							if (addTagToList(EPC)) {
-								dispatchEvent("TagEvent", EPC);
-							}
+			WritableMap map = Arguments.createMap();
+			if (isLocateMode && isPlaying) {
+				int distance = mPercentageConverter.asPercentage(rssi);
+				PlaySound(distance);
+				Log.e("distance", distance + "");
+				map.putInt("distance", distance);
+				dispatchEvent("locateTag", map);
+			} else if (!isLocateMode && !isReadBarcode) {
+				if (currentRoute != null && currentRoute.equalsIgnoreCase("tagit")) {
+					if (rssi > -50) {
+						if (addTagToList(EPC) && cacheTags.size() == 1) {
+							map.putString("epc", EPC);
+							dispatchEvent("TagEvent", map);
 						}
 					}
-				}
-			};
-
-	//Program tag Delegate Handler
-	private final ITransponderReceivedDelegate mProgramTagDelegate =
-			new ITransponderReceivedDelegate() {
-				@Override
-				public void transponderReceived(TransponderData transponderData, boolean b) {
-					String eaMsg = transponderData.getAccessErrorCode() == null ? "" : transponderData.getAccessErrorCode().getDescription() + " (EA)";
-					String ebMsg = transponderData.getBackscatterErrorCode() == null ? "" : transponderData.getBackscatterErrorCode().getDescription() + " (EB)";
-					String errorMsg = eaMsg + ebMsg;
-					if (errorMsg.length() > 0) {
-						dispatchEvent("writeTag", errorMsg);
-					} else {
-						dispatchEvent("writeTag", "success");
+				} else {
+					if (addTagToList(EPC)) {
+						map.putString("epc", EPC);
+						dispatchEvent("TagEvent", map);
 					}
 				}
-				//
-			};
+			}
+		}
+	};
+
+	// Program tag Delegate Handler
+	private final ITransponderReceivedDelegate mProgramTagDelegate = new ITransponderReceivedDelegate() {
+		@Override
+		public void transponderReceived(TransponderData transponderData, boolean b) {
+			String eaMsg = transponderData.getAccessErrorCode() == null ? ""
+					: transponderData.getAccessErrorCode().getDescription() + " (EA)";
+			String ebMsg = transponderData.getBackscatterErrorCode() == null ? ""
+					: transponderData.getBackscatterErrorCode().getDescription() + " (EB)";
+			String errorMsg = eaMsg + ebMsg;
+			if (errorMsg.length() > 0) {
+				dispatchEvent("writeTag", errorMsg);
+			} else {
+				dispatchEvent("writeTag", "success");
+			}
+		}
+		//
+	};
 
 	void DisconnectDevice() {
 		if (mReader != null && getCommander() != null) {
@@ -473,26 +471,26 @@ public abstract class RNRfidTslThread extends Thread {
 			// User selected reader
 			selectedReader = null;
 
-			//Indicate to read barcode
+			// Indicate to read barcode
 			isReadBarcode = false;
 
-			//Inventory
+			// Inventory
 			mInventoryCommand = null;
 			mInventoryResponder = null;
 			mAnyTagSeen = false;
 			cacheTags = null;
 
-			//Play Sound
+			// Play Sound
 			mp = null;
 			soundThread = null;
 			isPlaying = false;
 			soundRange = -1;
 
-			//Find IT
+			// Find IT
 			tagID = null;
 			isLocateMode = false;
 
-			//Program tag
+			// Program tag
 			mWriteCommand = null;
 		}
 	}
@@ -538,31 +536,32 @@ public abstract class RNRfidTslThread extends Thread {
 		if (state) {
 			// Listen for transponders
 			getCommander().addResponder(mInventoryResponder);
-//			getCommander().addResponder(mSwitchResponder);
+			// getCommander().addResponder(mSwitchResponder);
 
 			// Listen for barcodes
 			// getCommander().addResponder(mBarcodeResponder);
 		} else {
 			// Stop listening for transponders
 			getCommander().removeResponder(mInventoryResponder);
-//			getCommander().removeResponder(mSwitchResponder);
+			// getCommander().removeResponder(mSwitchResponder);
 
 			// Stop listening for barcodes
 			// getCommander().removeResponder(mBarcodeResponder);
 		}
 	}
 
-//	private void testForAntenna() {
-//		if (getCommander().isConnected()) {
-//			InventoryCommand testCommand = InventoryCommand.synchronousCommand();
-//			testCommand.setTakeNoAction(TriState.YES);
-//			getCommander().executeCommand(testCommand);
-//			if (!testCommand.isSuccessful()) {
-//				Log.e("Error",
-//						"ER:Error! Code: " + testCommand.getErrorCode() + " " + testCommand.getMessages().toString());
-//			}
-//		}
-//	}
+	// private void testForAntenna() {
+	// if (getCommander().isConnected()) {
+	// InventoryCommand testCommand = InventoryCommand.synchronousCommand();
+	// testCommand.setTakeNoAction(TriState.YES);
+	// getCommander().executeCommand(testCommand);
+	// if (!testCommand.isSuccessful()) {
+	// Log.e("Error",
+	// "ER:Error! Code: " + testCommand.getErrorCode() + " " +
+	// testCommand.getMessages().toString());
+	// }
+	// }
+	// }
 
 	void SaveCurrentRoute(String value) throws Exception {
 		currentRoute = value;
@@ -614,16 +613,16 @@ public abstract class RNRfidTslThread extends Thread {
 			getCommander().executeCommand(aCommand);
 		}
 	}
-//
-//	private int GetAntennaLevel() {
-//		if (getCommander() != null && getCommander().isConnected()) {
-//			getCommander().executeCommand(getInventoryCommand());
-//			int level = getInventoryCommand().getOutputPower();
-//			if (level > 0)
-//				return level;
-//		}
-//		return 0;
-//	}
+	//
+	// private int GetAntennaLevel() {
+	// if (getCommander() != null && getCommander().isConnected()) {
+	// getCommander().executeCommand(getInventoryCommand());
+	// int level = getInventoryCommand().getOutputPower();
+	// if (level > 0)
+	// return level;
+	// }
+	// return 0;
+	// }
 
 	void SetAntennaLevel(int level) {
 		if (getCommander() != null && getCommander().isConnected()) {
@@ -766,7 +765,7 @@ public abstract class RNRfidTslThread extends Thread {
 					InitInventory();
 					InitTrigger();
 					InitProgramTag();
-					SetBuzzer(false);
+					SetBuzzer(true);
 					updateConfiguration();
 					SetAntennaLevel(getCommander().getDeviceProperties().getMaximumCarrierPower());
 					String battery = GetBatteryLevel();
@@ -786,7 +785,7 @@ public abstract class RNRfidTslThread extends Thread {
 	void ReadBarcode(boolean value) {
 		isReadBarcode = value;
 
-		//If read barcode, then turn off RFID mode.
+		// If read barcode, then turn off RFID mode.
 		setEnabled(!value);
 	}
 
@@ -800,7 +799,7 @@ public abstract class RNRfidTslThread extends Thread {
 
 	private void HandleError(String msg, String code) {
 		Log.e(code, msg);
-//		String msg = ex.getMessage();
+		// String msg = ex.getMessage();
 		WritableMap map = Arguments.createMap();
 		map.putString("code", code);
 		map.putString("msg", msg);
