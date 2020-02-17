@@ -35,11 +35,12 @@ repositories {
 }
 
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation 'com.facebook.react:react-native:+'
 //    implementation 'com.android.support:appcompat-v7:27.1.1'
 //    implementation 'com.android.support:support-v4:27.1.1'
 //    implementation 'com.android.support:recyclerview-v7:27.1.1'
 //    implementation(name: 'Rfid.AsciiProtocol-2.0.1-release', ext: 'aar')
-    implementation project(path: ':Rfid.AsciiProtocol-2.3.1-release')
+    // implementation project(path: ':Rfid.AsciiProtocol-2.3.1-release')
 }
   
