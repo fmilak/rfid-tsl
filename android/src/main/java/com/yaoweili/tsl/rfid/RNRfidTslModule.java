@@ -17,9 +17,9 @@ public class RNRfidTslModule extends ReactContextBaseJavaModule implements Lifec
 	private static ReactApplicationContext reactContext;
 	private RNRfidTslThread scannerThread = null;
 
-	public RNRfidTslModule(ReactApplicationContext reactContext) {
-		super(reactContext);
-		reactContext = reactContext;
+	public RNRfidTslModule(ReactApplicationContext context) {
+		super(context);
+		reactContext = context;
 		reactContext.addLifecycleEventListener(this);
 
 		if (this.scannerThread == null) {
