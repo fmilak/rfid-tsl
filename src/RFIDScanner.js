@@ -143,4 +143,4 @@ class RFIDScanner {
   };
 }
 
-export default new RFIDScanner();
+export default RFIDScanner;

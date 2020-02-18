@@ -3,7 +3,7 @@
     "registry": "http://nexus.pinecone.int/repository/npm-hosted/"
   },
   "name": "react-native-rfid-tsl",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "## Getting started",
   "main": "index.js",
   "scripts": {
