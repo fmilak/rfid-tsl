@@ -256,6 +256,7 @@ public abstract class RNRfidTslThread extends Thread {
 				mAnyTagSeen = false;
 			}
 		});
+		getCommander().addResponder(mInventoryResponder);
 	}
 
 	private void InitTrigger() {
@@ -535,7 +536,7 @@ public abstract class RNRfidTslThread extends Thread {
 		// Update the commander for state changes
 		if (state) {
 			// Listen for transponders
-			getCommander().addResponder(mInventoryResponder);
+			// getCommander().addResponder(mInventoryResponder);
 			// getCommander().addResponder(mSwitchResponder);
 
 			// Listen for barcodes

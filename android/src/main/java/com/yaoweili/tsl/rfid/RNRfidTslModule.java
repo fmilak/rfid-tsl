@@ -14,13 +14,13 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class RNRfidTslModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-	private final ReactApplicationContext reactContext;
+	private static ReactApplicationContext reactContext;
 	private RNRfidTslThread scannerThread = null;
 
 	public RNRfidTslModule(ReactApplicationContext reactContext) {
 		super(reactContext);
-		this.reactContext = reactContext;
-		this.reactContext.addLifecycleEventListener(this);
+		reactContext = reactContext;
+		reactContext.addLifecycleEventListener(this);
 
 		if (this.scannerThread == null) {
 			InitialThread();
@@ -63,26 +63,26 @@ public class RNRfidTslModule extends ReactContextBaseJavaModule implements Lifec
 			this.scannerThread = new RNRfidTslThread(reactContext) {
 				@Override
 				public void dispatchEvent(String name, WritableMap data) {
-					RNRfidTslModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-							.emit(name, data);
+					RNRfidTslModule.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(name,
+							data);
 				}
 
 				@Override
 				public void dispatchEvent(String name, String data) {
-					RNRfidTslModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-							.emit(name, data);
+					RNRfidTslModule.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(name,
+							data);
 				}
 
 				@Override
 				public void dispatchEvent(String name, WritableArray data) {
-					RNRfidTslModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-							.emit(name, data);
+					RNRfidTslModule.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(name,
+							data);
 				}
 
 				@Override
 				public void dispatchEvent(String name, boolean data) {
-					RNRfidTslModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-							.emit(name, data);
+					RNRfidTslModule.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(name,
+							data);
 				}
 			};
 
@@ -92,15 +92,14 @@ public class RNRfidTslModule extends ReactContextBaseJavaModule implements Lifec
 			Log.e("InitialThread", err.getMessage());
 		}
 
-
 	}
 
-//	@ReactMethod
-//	public void Init(Promise promise) {
-//		if (scannerThread != null) {
-//			promise.resolve(scannerThread.Init());
-//		}
-//	}
+	// @ReactMethod
+	// public void Init(Promise promise) {
+	// if (scannerThread != null) {
+	// promise.resolve(scannerThread.Init());
+	// }
+	// }
 
 	@ReactMethod
 	public void ConnectDevice(Promise promise) {
