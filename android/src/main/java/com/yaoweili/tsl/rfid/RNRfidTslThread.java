@@ -1,52 +1,27 @@
 package com.yaoweili.tsl.rfid;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-// import android.support.v4.content.LocalBroadcastManager;
 import android.media.MediaPlayer;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-
-import android.content.Context;
-
 import com.uk.tsl.rfid.asciiprotocol.AsciiCommander;
-import com.uk.tsl.rfid.asciiprotocol.commands.AlertCommand;
-import com.uk.tsl.rfid.asciiprotocol.commands.BatteryStatusCommand;
-import com.uk.tsl.rfid.asciiprotocol.commands.FactoryDefaultsCommand;
-import com.uk.tsl.rfid.asciiprotocol.commands.InventoryCommand;
-import com.uk.tsl.rfid.asciiprotocol.commands.SwitchActionCommand;
-import com.uk.tsl.rfid.asciiprotocol.commands.WriteTransponderCommand;
-import com.uk.tsl.rfid.asciiprotocol.device.ConnectionState;
-import com.uk.tsl.rfid.asciiprotocol.device.IAsciiTransport;
-import com.uk.tsl.rfid.asciiprotocol.device.ObservableReaderList;
-import com.uk.tsl.rfid.asciiprotocol.device.Reader;
-import com.uk.tsl.rfid.asciiprotocol.device.ReaderManager;
-import com.uk.tsl.rfid.asciiprotocol.device.TransportType;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.Databank;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.QuerySelect;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.QuerySession;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.QueryTarget;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.SelectAction;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.SelectTarget;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.SwitchState;
-import com.uk.tsl.rfid.asciiprotocol.enumerations.TriState;
-import com.uk.tsl.rfid.asciiprotocol.responders.ICommandResponseLifecycleDelegate;
-import com.uk.tsl.rfid.asciiprotocol.responders.ISwitchStateReceivedDelegate;
-import com.uk.tsl.rfid.asciiprotocol.responders.ITransponderReceivedDelegate;
-import com.uk.tsl.rfid.asciiprotocol.responders.LoggerResponder;
-import com.uk.tsl.rfid.asciiprotocol.responders.SwitchResponder;
-import com.uk.tsl.rfid.asciiprotocol.responders.TransponderData;
+import com.uk.tsl.rfid.asciiprotocol.commands.*;
+import com.uk.tsl.rfid.asciiprotocol.device.*;
+import com.uk.tsl.rfid.asciiprotocol.enumerations.*;
+import com.uk.tsl.rfid.asciiprotocol.responders.*;
 import com.uk.tsl.utils.HexEncoding;
 import com.uk.tsl.utils.Observable;
 
 import java.util.ArrayList;
+
+//import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public abstract class RNRfidTslThread extends Thread {
 	private ReactApplicationContext context;
@@ -223,6 +198,7 @@ public abstract class RNRfidTslThread extends Thread {
 		mInventoryCommand.setIncludeChecksum(TriState.YES);
 		mInventoryCommand.setIncludePC(TriState.YES);
 		mInventoryCommand.setIncludeDateTime(TriState.YES);
+		mInventoryCommand.setUseAlert(TriState.NO);
 
 		// Use an InventoryCommand as a responder to capture all incoming inventory
 		// responses
