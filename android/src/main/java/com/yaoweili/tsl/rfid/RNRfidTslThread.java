@@ -521,7 +521,7 @@ public abstract class RNRfidTslThread extends Thread {
 
 	boolean IsConnected() {
 		if (getCommander() != null) {
-			return getCommander().isConnected();
+			return getCommander().getConnectionState().equals(ConnectionState.CONNECTED);
 		}
 		return false;
 	}
