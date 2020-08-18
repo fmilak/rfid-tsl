@@ -16,6 +16,7 @@ declare class RFIDScanner {
   saveCurrentRoute?(value: string): Promise<boolean>;
   saveSelectedScanner?(value: string): void;
   getConnectedReader?(): Promise<string>;
+  getBatteryLevel?(): Promise<string>;
   setAntennaLevel?(value: number): void;
   readBarcode?(value: boolean): Promise<boolean>;
   programTag?(oldTag: string, newTag: string): Promise<boolean>;
@@ -34,5 +35,5 @@ export enum RFIDScannerEvent {
   LOCATE_TAG = "locateTag",
   TRIGGER_ACTION = "triggerAction",
   RFID_STATUS = "RFIDStatusEvent",
-  BARCODE_ERROR = "barcodeError"
+  BARCODE_ERROR = "barcodeError",
 }

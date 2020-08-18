@@ -184,6 +184,17 @@ public class RNRfidTslModule extends ReactContextBaseJavaModule implements Lifec
 	}
 
 	@ReactMethod
+	public void GetBatteryLevel(Promise promise) {
+		try {
+			if (scannerThread != null) {
+				promise.resolve(this.scannerThread.GetBatteryLevel());
+			}
+		} catch (Exception err) {
+			promise.reject(err);
+		}
+	}
+
+	@ReactMethod
 	public void CleanCacheTags() {
 		if (scannerThread != null) {
 			scannerThread.CleanCacheTags();

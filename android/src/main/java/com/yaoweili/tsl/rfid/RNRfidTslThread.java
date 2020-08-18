@@ -570,7 +570,7 @@ public abstract class RNRfidTslThread extends Thread {
 		return deviceList;
 	}
 
-	private String GetBatteryLevel() {
+	String GetBatteryLevel() {
 		String level = null;
 		if (getCommander() != null && getCommander().isConnected()) {
 			BatteryStatusCommand bCommand = BatteryStatusCommand.synchronousCommand();
